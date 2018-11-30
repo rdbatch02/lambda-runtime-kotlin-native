@@ -1,0 +1,35 @@
+plugins {
+    id "org.jetbrains.kotlin.platform.native" version "1.3.0-rc-146"
+}
+
+sourceSets.main {
+    kotlin.srcDirs += "/src/main"
+}
+
+components.main {
+    // Targets independent options
+    allTargets {
+        linkerOpts '-L/common/lib/path'
+    }
+
+    dependencies {
+        cinterop('libcurl') {
+            // Set up compiler options
+            compilerOpts '-I/src/main/c_interop'
+        }
+    }
+
+    extraOpts '--time'
+}
+
+task runProgram {
+    def buildType = 'release' // Change to 'debug' to run application with debug symbols.
+    dependsOn "link${buildType.capitalize()}ExecutableMacos"
+    doLast {
+        def programFile = kotlin.targets.macos.compilations.main.getBinary('EXECUTABLE', buildType)
+        exec {
+            executable programFile
+            args ''
+        }
+    }
+}
