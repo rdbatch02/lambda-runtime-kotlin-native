@@ -7,6 +7,8 @@ sourceSets.main {
 }
 
 components.main {
+    outputKinds = [EXECUTABLE]
+    entryPoint = "runtime.main"
     // Targets independent options
     allTargets {
         linkerOpts '-L/common/lib/path'
@@ -19,14 +21,13 @@ components.main {
         }
     }
 
-    extraOpts '--time'
 }
 
 task runProgram {
-    def buildType = 'release' // Change to 'debug' to run application with debug symbols.
-    dependsOn "link${buildType.capitalize()}ExecutableMacos"
+    def buildType = 'debug' // Change to 'debug' to run application with debug symbols.
+    dependsOn "build"
     doLast {
-        def programFile = kotlin.targets.macos.compilations.main.getBinary('EXECUTABLE', buildType)
+        def programFile = "build/exe/main/${buildType}/lambda-runtime-kotlin-native.kexe"
         exec {
             executable programFile
             args ''
