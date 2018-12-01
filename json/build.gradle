@@ -1,0 +1,16 @@
+apply plugin: 'konan'
+
+konan.targets += ['linux_x64', 'macos_x64']
+
+konanArtifacts {
+    interop('jansson') {
+    }
+
+    library('kjson') {
+
+        libraries {
+            artifact 'jansson'
+        }
+    }
+}
+
