@@ -1,3 +1,0 @@
-interface LambdaHandler {
-    fun handler()
-}
