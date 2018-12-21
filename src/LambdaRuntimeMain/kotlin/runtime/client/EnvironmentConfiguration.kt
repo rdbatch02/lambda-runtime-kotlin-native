@@ -1,4 +1,4 @@
-package runtime
+package runtime.client
 
 import platform.posix.*
 import kotlinx.cinterop.*

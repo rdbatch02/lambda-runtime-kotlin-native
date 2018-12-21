@@ -1,5 +1,6 @@
 package runtime
 
+import runtime.client.EnvironmentConfiguration
 import runtime.client.LambdaRuntimeClient
 
 fun hello(): String = "Hello, Kotlin/Native!"
