@@ -1,34 +1,23 @@
 plugins {
-    id "org.jetbrains.kotlin.platform.native" version "1.3.0-rc-146"
+    id 'kotlin-multiplatform' version '1.3.10'
 }
 
-ext.json   = project('json')
-ext.kurl   = project('kurl')
-
-sourceSets.main {
-    kotlin.srcDirs += "/src/main"
-}
-
-components.main {
-    targets = ['linux_x64', 'macos_x64']
-    outputKinds = [EXECUTABLE]
-    entryPoint = "runtime.main"
-    // Targets independent options
-    allTargets {
-        linkerOpts '-L/common/lib/path'
-    }
-
-    dependencies {
-        cinterop('libcurl') {
-            // Set up compiler options
-            compilerOpts '-I/src/main/c_interop'
-        }
-        cinterop('jansson') {
-            // Set up compiler options
-            compilerOpts '-I/src/main/c_interop'
+kotlin {
+    targets {
+        fromPreset(presets.macosX64, 'LambdaRuntime')
+        configure([LambdaRuntime]) {
+            compilations.main.outputKinds 'EXECUTABLE'
+            compilations.main.entryPoint 'runtime.main'
+            compilations.main.cinterops {
+                libcurl {
+                    extraOpts '-I/src/main/c_interop'
+                }
+                jansson {
+                    extraOpts '-I/src/main/c_interop'
+                }
+            }
         }
     }
-
 }
 
 task runProgram {
