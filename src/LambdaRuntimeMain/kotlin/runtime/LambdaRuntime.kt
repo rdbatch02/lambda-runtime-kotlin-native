@@ -7,5 +7,6 @@ import runtime.handler.TestHandler
 fun main(args: Array<String>) {
     val config = EnvironmentConfiguration
     val client = LambdaRuntimeClient(TestHandler())
-    client.run()
+    println("Hello, Kotlin/Native!")
+//    client.run()
 }
