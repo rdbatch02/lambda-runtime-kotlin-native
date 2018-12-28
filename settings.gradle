@@ -9,14 +9,13 @@ pluginManagement {
 }
 rootProject.name = 'lambda-runtime-kotlin-native'
 
-// def konanBuildPath = gradle.startParameter.projectProperties['konan.build']
-// if (konanBuildPath != null) {
-//     includeBuild(konanBuildPath)
-//     gradle.allprojects {
-//         it.extensions.extraProperties.set('konan.home', "$konanBuildPath/dist")
-//     }
-// }
-//
+def konanBuildPath = gradle.startParameter.projectProperties['konan.build']
+if (konanBuildPath != null) {
+    includeBuild(konanBuildPath)
+    gradle.allprojects {
+        it.extensions.extraProperties.set('konan.home', "$konanBuildPath/dist")
+    }
+}
 // include ':json'
 // include ':kurl'
-// enableFeaturePreview('GRADLE_METADATA')
+enableFeaturePreview('GRADLE_METADATA')

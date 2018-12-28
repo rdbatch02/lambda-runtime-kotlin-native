@@ -51,9 +51,4 @@ class LambdaRuntimeClient(val handler: LambdaHandler) {
             }
         }
     }
-
-    fun getExample() {
-        val resp = rekwest.get("http://example.com")
-        println(resp)
-    }
 }

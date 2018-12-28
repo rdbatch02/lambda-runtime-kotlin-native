@@ -56,3 +56,5 @@ backend.native/tests/teamcity-test.property
 # Sample output
 samples/**/*.kt.bc-build
 samples/androidNativeActivity/Polyhedron
+
+*.jar
