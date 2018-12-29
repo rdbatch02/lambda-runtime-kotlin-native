@@ -1,38 +1,28 @@
+import org.gradle.internal.os.OperatingSystem;
 plugins {
-    id 'kotlin-multiplatform' version '1.3.10'
+    id 'kotlin-multiplatform' version '1.3.11'
 }
 
 repositories {
     mavenCentral()
 }
 
-
 kotlin {
     targets {
-        fromPreset(presets.macosX64, 'LambdaRuntime')
-        fromPreset(presets.linuxX64, 'LambdaRuntimeLinux')
+        if (OperatingSystem.current().isMacOsX()) {
+            println("Building for Mac")
+            fromPreset(presets.macosX64, 'LambdaRuntime')
+        }
+        else {
+            println("Building for Linux")
+            fromPreset(presets.linuxX64, 'LambdaRuntime')
+        }
         configure([LambdaRuntime]) {
             compilations.main.outputKinds 'EXECUTABLE'
             compilations.main.entryPoint 'runtime.main'
             compilations.main.cinterops {
-                libcurl {
-                    extraOpts '-I/src/main/c_interop'
-                }
-                jansson {
-                    extraOpts '-I/src/main/c_interop'
-                }
-            }
-        }
-        configure([LambdaRuntimeLinux]) {
-            compilations.main.outputKinds 'EXECUTABLE'
-            compilations.main.entryPoint 'runtime.main'
-            compilations.main.cinterops {
-                libcurl {
-                    extraOpts '-I/src/main/c_interop'
-                }
-                jansson {
-                    extraOpts '-I/src/main/c_interop'
-                }
+                libcurl {}
+                jansson {}
             }
         }
     }
