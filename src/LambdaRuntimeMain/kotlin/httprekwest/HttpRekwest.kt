@@ -1,6 +1,6 @@
 package httprekwest
 
-import kurl.*
+import kurl.KUrl
 
 class HttpRekwest(private val kurl: KUrl = KUrl()) {
     fun get(url: String, headers: Map<String, String>? = null): HttpResponse {

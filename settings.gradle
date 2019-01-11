@@ -16,6 +16,5 @@ if (konanBuildPath != null) {
         it.extensions.extraProperties.set('konan.home', "$konanBuildPath/dist")
     }
 }
-// include ':json'
-// include ':kurl'
+
 enableFeaturePreview('GRADLE_METADATA')

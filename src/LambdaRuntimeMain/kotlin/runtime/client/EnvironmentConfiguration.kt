@@ -1,7 +1,7 @@
 package runtime.client
 
-import platform.posix.*
-import kotlinx.cinterop.*
+import kotlinx.cinterop.toKString
+import platform.posix.getenv
 
 object EnvironmentConfiguration {
     val handler = getenv("_HANDLER")?.toKString()
