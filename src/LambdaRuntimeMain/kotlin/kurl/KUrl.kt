@@ -11,9 +11,7 @@ typealias HttpHandler = (String) -> Unit
 private fun CPointer<ByteVar>.toKString(length: Int) = this.readBytes(length).stringFromUtf8()
 
 class KUrl(val cookies: String? = null) {
-    var curl = curl_easy_init()
-
-    fun escape(string: String) =
+    fun escape(curl: COpaquePointer?, string: String) =
       curl_easy_escape(curl, string, 0) ?. let {
         val result = it.toKString()
         curl_free(it)
@@ -29,20 +27,28 @@ class KUrl(val cookies: String? = null) {
     }
 
     private fun makeRequest(url: String, options: Map<String, String>?, payload: String?, requestType: RequestType, onData: HttpHandler, onHeader: HttpHandler?) {
-        val args =
-                if (options != null) {
-                    "?" + options.map { (key, value) -> "$key=${escape(value)}"}.joinToString("&")
-                }
-                else {
-                    ""
-                }
-        curl_easy_setopt(curl, CURLOPT_URL, url + args)
+        var curl = curl_easy_init()
+        var headerStruct: CValuesRef<curl_slist>? = null
+        options?.forEach {
+            curl_slist_append(headerStruct, "${it.key}: ${it.value}")
+        }
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerStruct)
+//        val args =
+//                if (options != null) {
+//                    "?" + options.map { (key, value) -> "$key=${escape(curl, value)}"}.joinToString("&")
+//                }
+//                else {
+//                    ""
+//                }
+        curl_easy_setopt(curl, CURLOPT_URL, url.cstr)
         if (cookies != null) {
             curl_easy_setopt(curl, CURLOPT_COOKIEFILE, cookies)
             curl_easy_setopt(curl, CURLOPT_COOKIELIST, "RELOAD")
         }
         if (requestType == RequestType.POST) {
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload!!)
+            println("Setting post payload: $payload")
+            curl_easy_setopt(curl, CURLOPT_POST, 1L)
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload)
         }
         val stables = mutableListOf<StableRef<Any>>()
         val result = try {
@@ -84,22 +90,7 @@ class KUrl(val cookies: String? = null) {
             throw KUrlError("curl_easy_perform() failed with code $result: ${curl_easy_strerror(result)?.toKString() ?: ""}")
     }
 
-    fun close() {
-         if (curl == null) return
-         if (cookies != null)
-                curl_easy_setopt(curl, CURLOPT_COOKIEJAR, cookies)
-         curl_easy_cleanup(curl)
-         curl = null
-    }
-
     // So that we can use DSL syntax.
     fun fetch(url: String, options: Map<String, String>? = null, onData: HttpHandler) =
             makeRequest(url, options, null, RequestType.GET, onData, null)
 }
-
-inline fun <T> withUrl(url: KUrl, function: (KUrl) -> T): T =
-    try {
-        function(url)
-    } finally {
-        url.close()
-    }

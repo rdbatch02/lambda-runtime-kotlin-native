@@ -1,5 +1,5 @@
 package runtime.handler
 
 interface LambdaHandler {
-    fun handle(payload: InvocationRequest): String
+    fun handle(handler: (InvocationRequest) -> String): String
 }

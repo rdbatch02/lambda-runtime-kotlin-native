@@ -5,6 +5,8 @@ plugins {
 
 repositories {
     mavenCentral()
+    jcenter()
+    maven { url "https://dl.bintray.com/kotlin/ktor" }
 }
 
 kotlin {
@@ -18,12 +20,19 @@ kotlin {
             fromPreset(presets.linuxX64, 'LambdaRuntime')
         }
         configure([LambdaRuntime]) {
-            compilations.main.outputKinds 'dynamic'
+            compilations.main.outputKinds 'executable'
             compilations.main.entryPoint 'runtime.main'
             compilations.main.cinterops {
                 libcurl {
                     extraOpts '-I/usr/include/curl'
                 }
+            }
+        }
+    }
+    sourceSets {
+        LambdaRuntimeMain {
+            dependencies {
+                implementation "io.ktor:ktor-client-core-native:1.1.1"
             }
         }
     }
@@ -33,7 +42,7 @@ task runProgram {
     def buildType = 'debug' // Change to 'debug' to run application with debug symbols.
     dependsOn "build"
     doLast {
-        def programFile = "build/exe/main/${buildType}/macos_x64/lambda-runtime-kotlin-native.kexe"
+        def programFile = "build/bin/LambdaRuntime/main/${buildType}/executable/lambda-runtime-kotlin-native.kexe"
         exec {
             executable programFile
             args ''

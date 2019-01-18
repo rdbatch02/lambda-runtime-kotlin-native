@@ -1,12 +1,14 @@
 package runtime
 
-import runtime.client.EnvironmentConfiguration
-import runtime.client.LambdaRuntimeClient
-import runtime.handler.TestHandler
+import httprekwest.HttpRekwest
+
+//fun main(args: Array<String>) = LambdaRuntimeClient.run {
+//    "{\"body:\": \"Hello Kotlin Native\"}"
+//}
 
 fun main(args: Array<String>) {
-    val config = EnvironmentConfiguration
-    val client = LambdaRuntimeClient(TestHandler())
-    println("Hello, Kotlin/Native!")
-//    client.run()
+    val rekwest = HttpRekwest()
+    println(rekwest.post("http://echo.jpillora.com", mapOf("content-type" to "text/plain"), "{\n" +
+            "    \"testBody\": \"test\"\n" +
+            "}").body)
 }

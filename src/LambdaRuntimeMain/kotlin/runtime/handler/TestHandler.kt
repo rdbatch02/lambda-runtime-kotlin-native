@@ -1,7 +1,7 @@
 package runtime.handler
 
-class TestHandler: LambdaHandler {
-    override fun handle(payload: InvocationRequest): String {
+class TestHandler {
+    fun handle(payload: InvocationRequest): String {
         return payload.toString()
     }
 }
