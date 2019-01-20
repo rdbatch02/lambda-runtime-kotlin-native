@@ -28,7 +28,7 @@ jobs:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            docker save -o /caches/kotlin-native-lambda-runtime.tar app
+            docker save -o /caches/kotlin-native-lambda-runtime.tar kotlin-native-lambda-runtime
       - save_cache:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
