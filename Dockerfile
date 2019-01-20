@@ -1,7 +1,7 @@
 FROM amazonlinux:2017.03.1.20170812
 
-RUN yum groupinstall -y "Development Tools"
-RUN yum install -y which curl-devel
+#RUN yum groupinstall -y "Development Tools"
+RUN yum install -y which curl-devel gcc
 
 ENV JDK_9_VERSION=9.0.4
 
