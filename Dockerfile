@@ -16,6 +16,10 @@ RUN echo "/usr/local/lib" >> /etc/ld.so.conf.d/libc.conf && ldconfig
 COPY --from=anapsix/alpine-java:8 /opt/jdk/jre/lib/security/cacerts /usr/lib/jvm/openjdk-9/java/lib/security/cacerts
 
 ENV PATH="/kotlin-native/bin:/usr/lib/jvm/openjdk-9/java/bin:${PATH}"
-RUN echo "JAVA_HOME=$(which java)" && export PATH JAVA_HOME && mkdir /build
+RUN echo "JAVA_HOME=$(which java)" && export PATH JAVA_HOME && mkdir /build && mkdir /runtime
+
+COPY . runtime
+WORKDIR runtime
+RUN ./gradlew build --no-daemon
 
 ENTRYPOINT /bin/bash
