@@ -11,14 +11,10 @@ object LambdaRuntimeClient {
         while(true) {
             val invocationHttpRequest = rekwest.get("http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/next")
             try {
-                println("Invocation status code: ${invocationHttpRequest.statusCode}")
-                println("Invocation headers: ${invocationHttpRequest.headers}")
-                println("Invocation body: ${invocationHttpRequest.body}")
                 if (!invocationHttpRequest.headers.containsKey("Lambda-Runtime-Aws-Request-Id")) {
                     continue
                 }
                 val invocationRequest = RequestMapper.mapRequest(invocationHttpRequest)
-                println("Invocation Request: $invocationRequest")
                 val handlerResponse: String = try {
                     handler(invocationRequest)
                 }
@@ -29,26 +25,21 @@ object LambdaRuntimeClient {
                             "}"
                     rekwest.post(
                             "http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/init/error",
-                            mapOf("REQUEST_ID" to invocationRequest.requestId),
+                            mapOf("REQUEST_ID" to invocationRequest.requestId, "Content-Type" to "application/json"),
                             errorPayload
                     )
                     continue
                 }
-                println("Handler response: $handlerResponse")
-                val responseHeaders = mutableMapOf("REQUEST_ID" to invocationRequest.requestId)
+                val responseHeaders = mutableMapOf("REQUEST_ID" to invocationRequest.requestId, "Content-Type" to "application/json")
                 if (!invocationRequest.xrayTraceId.isNullOrEmpty()) {
                     responseHeaders["_X_AMZN_TRACE_ID"] = invocationRequest.xrayTraceId!!
                 }
 
-                val postResponse = rekwest.post(
+                rekwest.post(
                         "http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/${invocationRequest.requestId}/response",
                         responseHeaders,
                         handlerResponse
                 )
-
-                println("Response status code: ${postResponse.statusCode}")
-                println("Response headers: ${postResponse.headers}")
-                println("Response body: ${postResponse.body}")
             }
             catch (ex: BadRequestException) {
                 val errorPayload = "{" +

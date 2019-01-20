@@ -10,6 +10,9 @@ typealias HttpHandler = (String) -> Unit
 
 private fun CPointer<ByteVar>.toKString(length: Int) = this.readBytes(length).stringFromUtf8()
 
+@SharedImmutable
+private val curlConfigReturn = curl_global_init(CURL_GLOBAL_ALL)
+
 class KUrl(val cookies: String? = null) {
     fun escape(curl: COpaquePointer?, string: String) =
       curl_easy_escape(curl, string, 0) ?. let {
@@ -30,25 +33,16 @@ class KUrl(val cookies: String? = null) {
         var curl = curl_easy_init()
         var headerStruct: CValuesRef<curl_slist>? = null
         options?.forEach {
-            curl_slist_append(headerStruct, "${it.key}: ${it.value}")
+            headerStruct = curl_slist_append(headerStruct, "${it.key}: ${it.value}")
         }
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerStruct)
-//        val args =
-//                if (options != null) {
-//                    "?" + options.map { (key, value) -> "$key=${escape(curl, value)}"}.joinToString("&")
-//                }
-//                else {
-//                    ""
-//                }
         curl_easy_setopt(curl, CURLOPT_URL, url.cstr)
         if (cookies != null) {
             curl_easy_setopt(curl, CURLOPT_COOKIEFILE, cookies)
             curl_easy_setopt(curl, CURLOPT_COOKIELIST, "RELOAD")
         }
         if (requestType == RequestType.POST) {
-            println("Setting post payload: $payload")
-            curl_easy_setopt(curl, CURLOPT_POST, 1L)
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload)
+            curl_easy_setopt(curl, CURLOPT_COPYPOSTFIELDS, payload)
         }
         val stables = mutableListOf<StableRef<Any>>()
         val result = try {
@@ -84,6 +78,7 @@ class KUrl(val cookies: String? = null) {
             stables.forEach {
                 it.dispose()
             }
+            curl_easy_cleanup(curl)
         }
 
         if (result != CURLE_OK)
