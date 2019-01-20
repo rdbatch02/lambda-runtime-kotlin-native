@@ -3,10 +3,13 @@ jobs:
   build:
     working_directory: /kotlin-native-lambda-runtime
     docker:
-      - image: docker:18.06.1-ce
+      - image: docker:18.06.1-ce-git
     steps:
       - checkout
       - setup_remote_docker
+      - run:
+          name: list dir
+          command: ls
       - restore_cache:
           keys:
             - v1-{{ .Branch }}
