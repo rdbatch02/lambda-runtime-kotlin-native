@@ -37,7 +37,7 @@ jobs:
           name: Publish Docker Image to Docker Hub
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+              echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
               IMAGE_TAG="0.0.${CIRCLE_BUILD_NUM}"
               docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
               docker push $IMAGE_NAME:latest
