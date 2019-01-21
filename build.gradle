@@ -1,11 +1,16 @@
 import org.gradle.internal.os.OperatingSystem
 plugins {
     id 'kotlin-multiplatform' version '1.3.11'
+    id 'maven-publish'
+    id "com.jfrog.bintray" version "1.8.4"
 }
+
+group 'com.batchofcode'
+version '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
-//    maven { url "https://dl.bintray.com/kotlin/ktor" }
+    jcenter()
 }
 
 kotlin {
@@ -19,22 +24,40 @@ kotlin {
             fromPreset(presets.linuxX64, 'LambdaRuntime')
         }
         configure([LambdaRuntime]) {
-            compilations.main.outputKinds 'executable'
-            compilations.main.entryPoint 'runtime.main'
+//            compilations.main.outputKinds 'static'
+//            compilations.main.entryPoint 'runtime.main'
             compilations.main.cinterops {
-                libcurl {
-                    extraOpts '-I/usr/include/curl'
-                }
+                libcurl
             }
         }
     }
-//    sourceSets {
-//        LambdaRuntimeMain {
-//            dependencies {
-//                implementation "io.ktor:ktor-client-core-native:1.1.1"
-//            }
-//        }
-//    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact "build/classes/kotlin/LambdaRuntime/main/lambda-runtime-kotlin-native.klib"
+            artifactId = "lambda-runtime-kotlin-native"
+            groupId = 'com.batchofcode'
+            artifactId = 'lambda-runtime-kotlin-native'
+            version = '0.1'
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['maven']
+    pkg {
+        repo = 'com.batchofcode'
+        name = 'lambda-runtime-kotlin-native'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/c1phr/lambda-runtime-kotlin-native'
+        version {
+            name = '0.1'
+        }
+    }
 }
 
 task runProgram {
