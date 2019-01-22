@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: /kotlin-native-lambda-runtime
     docker:
-      - image: c1phr/kotlin-native-lambda-runtime:latest
+      - image: c1phr/kotlin-native-lambda-runtime-compiler:latest
     steps:
       - checkout
       - run:
