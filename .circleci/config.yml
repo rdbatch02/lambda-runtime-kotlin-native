@@ -10,9 +10,9 @@ jobs:
           name: Build runtime
           command: |
             ./gradlew build --no-daemon
-#      - deploy:
-#          name: Publish Docker Image to Docker Hub
-#          command: |
-#            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-#              ./gradlew bintrayPublish
-#            fi
+      - deploy:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              ./gradlew -PbuildNum=BUILD_${CIRCLE_BUILD_NUM} bintrayPublish
+            fi
