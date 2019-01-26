@@ -11,8 +11,8 @@ jobs:
           command: |
             ./gradlew build --no-daemon
       - deploy:
-          name: Publish Docker Image to Docker Hub
+          name: Publish to Bintray
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              ./gradlew -PbuildNum=BUILD_${CIRCLE_BUILD_NUM} bintrayPublish
+              ./gradlew generatePomFileForMavenPublication bintrayPublish -PbuildNum=BUILD_${CIRCLE_BUILD_NUM}
             fi

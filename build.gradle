@@ -40,7 +40,7 @@ publishing {
             artifactId = "lambda-runtime-kotlin-native"
             groupId = 'com.batchofcode'
             artifactId = 'lambda-runtime-kotlin-native'
-            version = project.findProperty('buildNum') ?: '0.1'
+            version = project.findProperty('buildNum')
         }
     }
 }
@@ -55,7 +55,7 @@ bintray {
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/c1phr/lambda-runtime-kotlin-native'
         version {
-            name = project.findProperty('buildNum') ?: '0.1'
+            name = project.findProperty('buildNum')
         }
     }
 }
