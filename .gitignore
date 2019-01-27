@@ -58,3 +58,5 @@ samples/**/*.kt.bc-build
 samples/androidNativeActivity/Polyhedron
 
 *.jar
+
+/lambda

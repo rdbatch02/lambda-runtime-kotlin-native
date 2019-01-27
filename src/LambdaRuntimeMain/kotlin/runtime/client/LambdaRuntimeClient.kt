@@ -1,12 +1,11 @@
 package runtime.client
 
 import httprekwest.HttpRekwest
+import httprekwest.KUrlHttpRekwest
 import runtime.client.exception.BadRequestException
 import runtime.handler.InvocationRequest
 
-object LambdaRuntimeClient {
-    private val rekwest = HttpRekwest()
-
+class LambdaRuntimeClient(private val rekwest: HttpRekwest = KUrlHttpRekwest()) {
     fun run(handler: (InvocationRequest) -> String) {
         while(true) {
             val invocationHttpRequest = rekwest.get("http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/next")
