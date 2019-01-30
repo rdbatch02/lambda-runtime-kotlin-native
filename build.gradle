@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'com.batchofcode'
-version '0.0.1-SNAPSHOT'
+version project.findProperty('buildNum') ?: '0.0.2_SNAPSOT'
 
 repositories {
     mavenCentral()
@@ -47,7 +47,7 @@ publishing {
             artifactId = "lambda-runtime-kotlin-native"
             groupId = 'com.batchofcode'
             artifactId = 'lambda-runtime-kotlin-native'
-            version = project.findProperty('buildNum') ?: "0.1_SNAPSHOT"
+            version = project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
         }
     }
 }
