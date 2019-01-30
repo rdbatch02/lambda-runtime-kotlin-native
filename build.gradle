@@ -23,9 +23,8 @@ kotlin {
             println("Building for Linux")
             fromPreset(presets.linuxX64, 'LambdaRuntime')
         }
+
         configure([LambdaRuntime]) {
-//            compilations.main.outputKinds 'static'
-//            compilations.main.entryPoint 'runtime.main'
             compilations.main.cinterops {
                 libcurl
             }
@@ -48,7 +47,7 @@ publishing {
             artifactId = "lambda-runtime-kotlin-native"
             groupId = 'com.batchofcode'
             artifactId = 'lambda-runtime-kotlin-native'
-            version = project.findProperty('buildNum')
+            version = project.findProperty('buildNum') ?: "0.1_SNAPSHOT"
         }
     }
 }
@@ -57,7 +56,7 @@ bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
     publish = true
-    publications = ['maven']
+    publications = ['LambdaRuntime']
     pkg {
         repo = 'com.batchofcode'
         name = 'lambda-runtime-kotlin-native'

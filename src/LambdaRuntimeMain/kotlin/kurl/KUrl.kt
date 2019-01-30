@@ -3,6 +3,7 @@ package kurl
 import kotlinx.cinterop.*
 import libcurl.*
 import platform.posix.size_t
+import kotlin.native.concurrent.SharedImmutable
 
 class KUrlError(message: String) : Error(message)
 

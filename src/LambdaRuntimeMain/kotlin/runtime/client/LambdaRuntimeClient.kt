@@ -31,7 +31,7 @@ class LambdaRuntimeClient(private val rekwest: HttpRekwest = KUrlHttpRekwest()) 
                 }
                 val responseHeaders = mutableMapOf("REQUEST_ID" to invocationRequest.requestId, "Content-Type" to "application/json")
                 if (!invocationRequest.xrayTraceId.isNullOrEmpty()) {
-                    responseHeaders["_X_AMZN_TRACE_ID"] = invocationRequest.xrayTraceId!!
+                    responseHeaders["_X_AMZN_TRACE_ID"] = invocationRequest.xrayTraceId
                 }
 
                 rekwest.post(
