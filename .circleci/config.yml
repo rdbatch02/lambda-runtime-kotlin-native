@@ -14,5 +14,5 @@ jobs:
           name: Publish to Bintray
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              ./gradlew generatePomFileForLambdaRuntimePublication bintrayUpload bintrayPublish -PbuildNum="BUILD_${CIRCLE_BUILD_NUM}"
+              ./gradlew generatePomFileForLambdaRuntimePublication generateMetadataFileForLambdaRuntimePublication bintrayUpload bintrayPublish -PbuildNum="BUILD_${CIRCLE_BUILD_NUM}"
             fi
