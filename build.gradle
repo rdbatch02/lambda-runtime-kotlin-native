@@ -56,6 +56,11 @@ bintray {
     key = System.getenv('BINTRAY_KEY')
     publish = true
     publications = ['LambdaRuntime']
+    filesSpec {
+        from 'build/publications/LambdaRuntime/module.json'
+        into 'com/batchofcode/lambda-runtime-kotlin-native/' + project.version
+        rename 'module.json', 'lambda-runtime-kotlin-native-' + project.version + '.module'
+    }
     pkg {
         repo = 'com.batchofcode'
         name = 'lambda-runtime-kotlin-native'
