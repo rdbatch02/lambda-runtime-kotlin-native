@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'com.batchofcode'
-version project.findProperty('buildNum') ?: '0.0.2_SNAPSOT'
+version project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -42,8 +42,7 @@ kotlin {
 
 publishing {
     publications {
-        maven(MavenPublication) {
-            artifact "build/classes/kotlin/LambdaRuntime/main/lambda-runtime-kotlin-native.klib"
+        LambdaRuntime {
             artifactId = "lambda-runtime-kotlin-native"
             groupId = 'com.batchofcode'
             artifactId = 'lambda-runtime-kotlin-native'
