@@ -14,16 +14,16 @@ repositories {
 
 kotlin {
     targets {
-        fromPreset(presets.macosX64, 'LambdaRuntimeMacos')
-        fromPreset(presets.linuxX64, 'LambdaRuntime')
-//        if (OperatingSystem.current().isMacOsX()) {
-//            println("Building for Mac")
-//            fromPreset(presets.macosX64, 'LambdaRuntime')
-//        }
-//        else {
-//            println("Building for Linux")
-//            fromPreset(presets.linuxX64, 'LambdaRuntime')
-//        }
+        //fromPreset(presets.macosX64, 'LambdaRuntimeMacos')
+        //fromPreset(presets.linuxX64, 'LambdaRuntime')
+        if (OperatingSystem.current().isMacOsX()) {
+            println("Building for Mac")
+            fromPreset(presets.macosX64, 'LambdaRuntime')
+        }
+        else {
+            println("Building for Linux")
+            fromPreset(presets.linuxX64, 'LambdaRuntime')
+        }
 
         configure([LambdaRuntime, LambdaRuntimeMacos]) {
             compilations.main.cinterops {
@@ -36,13 +36,7 @@ kotlin {
         // in gradle.properties file and re-import your project in IDE.
         LambdaRuntimeMain {
         }
-        LambdaRuntimeMacosMain {
-            dependsOn LambdaRuntimeMain
-        }
         LambdaRuntimeTest {
-        }
-        LambdaRuntimeMacosTest {
-            dependsOn LambdaRuntimeTest
         }
     }
 }
