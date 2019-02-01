@@ -86,7 +86,7 @@ bintrayUpload.dependsOn publishToMavenLocal
 bintrayUpload.doFirst {
     publications = project.publishing.publications.findAll { !it.name.contains('-test') }.collect {
         println("Uploading artifact '$it.groupId:$it.artifactId:$it.version' from publication '$it.name'")
-        it
+        it.name
     }
 }
 
