@@ -1,4 +1,3 @@
-import org.gradle.internal.os.OperatingSystem
 plugins {
     id 'kotlin-multiplatform' version '1.3.20'
     id 'maven-publish'
@@ -15,16 +14,18 @@ repositories {
 
 kotlin {
     targets {
-        if (OperatingSystem.current().isMacOsX()) {
-            println("Building for Mac")
-            fromPreset(presets.macosX64, 'LambdaRuntime')
-        }
-        else {
-            println("Building for Linux")
-            fromPreset(presets.linuxX64, 'LambdaRuntime')
-        }
+        fromPreset(presets.macosX64, 'LambdaRuntimeMacos')
+        fromPreset(presets.linuxX64, 'LambdaRuntime')
+//        if (OperatingSystem.current().isMacOsX()) {
+//            println("Building for Mac")
+//            fromPreset(presets.macosX64, 'LambdaRuntime')
+//        }
+//        else {
+//            println("Building for Linux")
+//            fromPreset(presets.linuxX64, 'LambdaRuntime')
+//        }
 
-        configure([LambdaRuntime]) {
+        configure([LambdaRuntime, LambdaRuntimeMacos]) {
             compilations.main.cinterops {
                 libcurl
             }
@@ -35,27 +36,33 @@ kotlin {
         // in gradle.properties file and re-import your project in IDE.
         LambdaRuntimeMain {
         }
+        LambdaRuntimeMacosMain {
+            dependsOn LambdaRuntimeMain
+        }
         LambdaRuntimeTest {
+        }
+        LambdaRuntimeMacosTest {
+            dependsOn LambdaRuntimeTest
         }
     }
 }
 
-publishing {
-    publications {
-        LambdaRuntime {
-            artifactId = "lambda-runtime-kotlin-native"
-            groupId = 'com.batchofcode'
-            artifactId = 'lambda-runtime-kotlin-native'
-            version = project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
-        }
-    }
-}
+//publishing {
+//    publications {
+//        LambdaRuntime {
+//            artifactId = "lambda-runtime-kotlin-native"
+//            groupId = 'com.batchofcode'
+//            artifactId = 'lambda-runtime-kotlin-native'
+//            version = project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
+//        }
+//    }
+//}
 
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
     publish = true
-    publications = ['LambdaRuntime']
+//    publications = ['LambdaRuntime']
     filesSpec {
         from 'build/publications/LambdaRuntime/module.json'
         into 'com/batchofcode/lambda-runtime-kotlin-native/' + project.version
@@ -69,6 +76,17 @@ bintray {
         version {
             name = project.findProperty('buildNum')
         }
+    }
+}
+
+// TODO :kludge this is required for K/N publishing
+bintrayUpload.dependsOn publishToMavenLocal
+
+// This is for easier debugging of bintray uploading problems
+bintrayUpload.doFirst {
+    publications = project.publishing.publications.findAll { !it.name.contains('-test') }.collect {
+        println("Uploading artifact '$it.groupId:$it.artifactId:$it.version' from publication '$it.name'")
+        it
     }
 }
 
