@@ -26,7 +26,7 @@ kotlin {
             fromPreset(presets.linuxX64, 'LambdaRuntime')
         }
 
-        configure([LambdaRuntime, LambdaRuntimeMacos]) {
+        configure([LambdaRuntime]) {
             compilations.main.cinterops {
                 libcurl
             }
