@@ -1,6 +1,6 @@
 import org.gradle.internal.os.OperatingSystem
 plugins {
-    id 'kotlin-multiplatform' version '1.3.20'
+    id 'kotlin-multiplatform' version '1.3.21'
     id 'maven-publish'
     id "com.jfrog.bintray" version "1.8.4"
 }
@@ -15,8 +15,6 @@ repositories {
 
 kotlin {
     targets {
-        //fromPreset(presets.macosX64, 'LambdaRuntimeMacos')
-        //fromPreset(presets.linuxX64, 'LambdaRuntime')
         if (OperatingSystem.current().isMacOsX()) {
             println("Building for Mac")
             fromPreset(presets.macosX64, 'LambdaRuntime')
@@ -42,23 +40,23 @@ kotlin {
     }
 }
 
-//publishing {
-//    publications {
-//        LambdaRuntime {
-//            artifactId = "lambda-runtime-kotlin-native"
-//            groupId = 'com.batchofcode'
-//            artifactId = 'lambda-runtime-kotlin-native'
-//            version = project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
-//        }
-//    }
-//}
+publishing {
+    publications {
+        LambdaRuntime {
+            artifactId = "lambda-runtime-kotlin-native"
+            groupId = 'com.batchofcode'
+            artifactId = 'lambda-runtime-kotlin-native'
+            version = project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
+        }
+    }
+}
 
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
     publish = true
     override = true
-//    publications = ['LambdaRuntime']
+    publications = ['kotlinMultiplatform']
     filesSpec {
         from 'build/publications/LambdaRuntime/module.json'
         into 'com/batchofcode/lambda-runtime-kotlin-native/' + project.version
