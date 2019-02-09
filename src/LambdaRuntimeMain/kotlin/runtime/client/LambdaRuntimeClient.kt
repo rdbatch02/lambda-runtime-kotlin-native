@@ -23,8 +23,8 @@ class LambdaRuntimeClient(private val rekwest: HttpRekwest = KUrlHttpRekwest()) 
                 }
                 catch (ex: Exception) {
                     val errorPayload = "{" +
-                            "\"errorMessage\": \"Failed to execute function.\"," +
-                            "\"errorType\": \"${ex::class.simpleName}\"" +
+                            "\"errorType\": \"${ex::class.simpleName}\"," +
+                            "\"errorMessage\": \"${ex.message}.\"" +
                             "}"
                     println(ex)
                     rekwest.post(
