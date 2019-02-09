@@ -19,9 +19,10 @@ class LambdaRuntimeClient(private val rekwest: HttpRekwest = KUrlHttpRekwest()) 
                 }
                 catch (ex: Exception) {
                     val errorPayload = "{" +
-                            "\"errorMessage\": \"Failed to load function.\"," +
+                            "\"errorMessage\": \"Failed to execute function.\"," +
                             "\"errorType\": \"${ex::class.simpleName}\"" +
                             "}"
+                    println(ex)
                     rekwest.post(
                             "http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/init/error",
                             mapOf("REQUEST_ID" to invocationRequest.requestId, "Content-Type" to "application/json"),
