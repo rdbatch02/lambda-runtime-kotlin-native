@@ -26,7 +26,7 @@ class LambdaRuntimeClient(private val rekwest: HttpRekwest = KUrlHttpRekwest()) 
                             "\"errorType\": \"${ex::class.simpleName}\"," +
                             "\"errorMessage\": \"${ex.message}.\"" +
                             "}"
-                    println(ex)
+                    ex.printStackTrace()
                     rekwest.post(
                             "http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/${invocationRequest.requestId}/error",
                             responseHeaders,
@@ -34,7 +34,6 @@ class LambdaRuntimeClient(private val rekwest: HttpRekwest = KUrlHttpRekwest()) 
                     )
                     continue
                 }
-
 
                 rekwest.post(
                         "http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/${invocationRequest.requestId}/response",
