@@ -14,8 +14,12 @@ class LambdaRuntimeClient(private val rekwest: HttpRekwest = KUrlHttpRekwest()) 
                     continue
                 }
                 val invocationRequest = RequestMapper.mapRequest(invocationHttpRequest)
+                val responseHeaders = mutableMapOf("REQUEST_ID" to invocationRequest.requestId, "Content-Type" to "application/json")
+                if (!invocationRequest.xrayTraceId.isNullOrEmpty()) {
+                    responseHeaders["_X_AMZN_TRACE_ID"] = invocationRequest.xrayTraceId
+                }
                 val handlerResponse: String = try {
-                    handler(invocationRequest)
+                    handler(invocationRequest) // Invoke handler
                 }
                 catch (ex: Exception) {
                     val errorPayload = "{" +
@@ -24,16 +28,13 @@ class LambdaRuntimeClient(private val rekwest: HttpRekwest = KUrlHttpRekwest()) 
                             "}"
                     println(ex)
                     rekwest.post(
-                            "http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/init/error",
-                            mapOf("REQUEST_ID" to invocationRequest.requestId, "Content-Type" to "application/json"),
+                            "http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/${invocationRequest.requestId}/error",
+                            responseHeaders,
                             errorPayload
                     )
                     continue
                 }
-                val responseHeaders = mutableMapOf("REQUEST_ID" to invocationRequest.requestId, "Content-Type" to "application/json")
-                if (!invocationRequest.xrayTraceId.isNullOrEmpty()) {
-                    responseHeaders["_X_AMZN_TRACE_ID"] = invocationRequest.xrayTraceId
-                }
+
 
                 rekwest.post(
                         "http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/${invocationRequest.requestId}/response",
@@ -47,7 +48,7 @@ class LambdaRuntimeClient(private val rekwest: HttpRekwest = KUrlHttpRekwest()) 
                         "\"errorType\": \"${ex::class.simpleName}\"" +
                         "}"
                 rekwest.post(
-                        "http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/${ex.requestId}",
+                        "http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/init/error",
                         mapOf("REQUEST_ID" to ex.requestId),
                         errorPayload
                 )

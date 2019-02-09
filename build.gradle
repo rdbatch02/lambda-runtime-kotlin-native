@@ -40,16 +40,16 @@ kotlin {
     }
 }
 
-//publishing {
-//    publications {
-//        LambdaRuntime {
-//            artifactId = "lambda-runtime-kotlin-native"
-//            groupId = 'com.batchofcode'
-//            artifactId = 'lambda-runtime-kotlin-native'
-//            version = project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
-//        }
-//    }
-//}
+publishing {
+    publications {
+        LambdaRuntime {
+            artifactId = "lambda-runtime-kotlin-native"
+            groupId = 'com.batchofcode'
+            artifactId = 'lambda-runtime-kotlin-native'
+            version = project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
+        }
+    }
+}
 
 bintray {
     user = System.getenv('BINTRAY_USER')
