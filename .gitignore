@@ -59,4 +59,4 @@ samples/androidNativeActivity/Polyhedron
 
 *.jar
 
-/lambda
+kn-runtime-layer.zip
