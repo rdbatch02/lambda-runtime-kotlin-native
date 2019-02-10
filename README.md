@@ -1,5 +1,5 @@
 # AWS Lambda Runtime - Kotlin/Native 
-[![CircleCI](https://circleci.com/gh/c1phr/lambda-runtime-kotlin-native.svg?style=svg)](https://circleci.com/gh/c1phr/lambda-runtime-kotlin-native)
+![](https://img.shields.io/circleci/project/github/c1phr/lambda-runtime-kotlin-native/master.svg?style=flat)
  [ ![Download](https://api.bintray.com/packages/c1phr/com.batchofcode/lambda-runtime-kotlin-native/images/download.svg) ](https://bintray.com/c1phr/com.batchofcode/lambda-runtime-kotlin-native/_latestVersion)
 
 AWS Lambda Runtime for [Kotlin/Native](https://kotlinlang.org/docs/reference/native-overview.html). This provides a way to run Kotlin code in an AWS Lambda serverless context without the JVM, significantly reducing "cold start" time.
@@ -40,7 +40,7 @@ Examples can be found in the [Samples repo](https://github.com/c1phr/kotlin-nati
      }
     ```
 3. **Build for Linux** and zip an executable kexe with your code executed from the entrypoint `main()` function. NOTE: You must be using Linux to build for Lambda. **See [Building](#Building) for more info** and instructions for building from non-Linux hosts.
-4. Upload your function using the `kotlin-native-runtime` layer.:
+4. Upload your function using the `kotlin-native-runtime` layer:
     ```
     $ aws lambda create-function --function-name my-kotlin-native-function \
           --zip-file fileb://myApp.zip --handler myApp.kexe --runtime provided \
