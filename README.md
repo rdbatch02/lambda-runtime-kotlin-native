@@ -71,3 +71,15 @@ If you aren't using any platform-specific dependencies or libraries, then any Li
 This runtime is distributed in all of the public AWS regions. Just replace `<REGION>` with your region such as: `us-east-2`, `us-west-1`, `eu-north-1`, etc. 
 
 ```arn:aws:lambda:<REGION>:856841379672:layer:kotlin-native-runtime:1```
+
+## Serverless Framework
+[Serverless Framework](https://serverless.com) has support for custom runtimes and layers. An example can be found in the [samples repo](https://github.com/c1phr/kotlin-native-lambda-samples/blob/master/CsvParser/serverless/serverless.yml).
+
+```yaml
+functions:
+  foo:
+    runtime: provided
+    handler: main.kexe
+    layers:
+      - arn:aws:lambda:us-east-2:856841379672:layer:kotlin-native-runtime:1
+```
