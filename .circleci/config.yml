@@ -10,9 +10,9 @@ jobs:
           name: Build runtime
           command: |
             ./gradlew clean build LambdaRuntimeTest
-#      - deploy:
-#          name: Publish to Bintray
-#          command: |
-#            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-#              ./gradlew generatePomFileForLambdaRuntimePublication generateMetadataFileForLambdaRuntimePublication bintrayUpload bintrayPublish -PbuildNum="BUILD_${CIRCLE_BUILD_NUM}"
-#            fi
+      - deploy:
+          name: Publish to Bintray
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              ./gradlew generatePomFileForLambdaRuntimePublication generateMetadataFileForLambdaRuntimePublication bintrayUpload bintrayPublish -PbuildNum="1.0.${CIRCLE_BUILD_NUM}"
+            fi

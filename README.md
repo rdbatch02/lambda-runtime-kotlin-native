@@ -30,7 +30,7 @@ Examples can be found in the [Samples repo](https://github.com/c1phr/kotlin-nati
         maven { url  "https://dl.bintray.com/c1phr/com.batchofcode" }    
     }
     dependencies {
-        implementation 'com.batchofcode:lambda-runtime-kotlin-native:BUILD_40'                
+        implementation 'com.batchofcode:lambda-runtime-kotlin-native:1.0.41'                
     }
     ```
 2. Implement a handler taking an [InvocationRequest](https://github.com/c1phr/lambda-runtime-kotlin-native/blob/master/src/LambdaRuntimeMain/kotlin/runtime/handler/InvocationRequest.kt) as input and returning a string (such as serialized Json):
