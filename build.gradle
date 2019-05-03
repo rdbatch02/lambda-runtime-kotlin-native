@@ -10,24 +10,34 @@ version project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
 repositories {
     mavenCentral()
     jcenter()
+    maven {
+        url  "https://kotlin.bintray.com/ktor"
+    }
 }
 
 kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                api "io.ktor:ktor-client-core:$ktor_version"
+                api "io.ktor:ktor-client-curl:$ktor_version"
+            }
+        }
+    }
+
     macosX64("macos") {
-        compilations.main {
-            cinterops {
-                libcurl {
-                    defFile project.file("src/nativeInterop/cinterop/libcurl_macos.def")
-                }
+        compilations.main.defaultSourceSet {
+            dependencies {
+//                implementation "io.ktor:ktor-client-macosx64:$ktor_version"
+//                implementation "io.ktor:ktor-client-curl-macosx64:$ktor_version"
             }
         }
     }
     linuxX64("linux") {
-        compilations.main {
-            cinterops {
-                libcurl {
-                    defFile project.file("src/nativeInterop/cinterop/libcurl.def")
-                }
+        compilations.main.defaultSourceSet {
+            dependencies {
+//                implementation "io.ktor:ktor-client-linuxx64:$ktor_version"
+//                implementation "io.ktor:ktor-client-curl-linuxx64:$ktor_version"
             }
         }
     }
@@ -56,6 +66,7 @@ kotlin {
 //        }
 //    }
 }
+
 
 publishing {
     publications {
