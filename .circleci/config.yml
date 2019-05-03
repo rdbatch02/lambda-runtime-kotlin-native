@@ -9,7 +9,7 @@ jobs:
       - run:
           name: Build runtime
           command: |
-            ./gradlew clean build LambdaRuntimeTest
+            ./gradlew clean build linuxTest
       - deploy:
           name: Publish to Bintray
           command: |
