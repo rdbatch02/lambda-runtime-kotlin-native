@@ -10,72 +10,43 @@ version project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
 repositories {
     mavenCentral()
     jcenter()
-    maven {
-        url  "https://kotlin.bintray.com/ktor"
-    }
+    maven { url "https://kotlin.bintray.com/kotlinx" }
+    maven { url  "https://kotlin.bintray.com/ktor" }
 }
 
 kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
-                api "io.ktor:ktor-client-core:$ktor_version"
-                api "io.ktor:ktor-client-curl:$ktor_version"
-            }
-        }
-    }
+    macosX64("macos")
+    linuxX64("linux")
+}
 
-    macosX64("macos") {
-        compilations.main.defaultSourceSet {
-            dependencies {
-//                implementation "io.ktor:ktor-client-macosx64:$ktor_version"
-//                implementation "io.ktor:ktor-client-curl-macosx64:$ktor_version"
-            }
-        }
-    }
-    linuxX64("linux") {
-        compilations.main.defaultSourceSet {
-            dependencies {
-//                implementation "io.ktor:ktor-client-linuxx64:$ktor_version"
-//                implementation "io.ktor:ktor-client-curl-linuxx64:$ktor_version"
-            }
-        }
-    }
-//    targets {
-//        if (OperatingSystem.current().isMacOsX()) {
-//            println("Building for Mac")
-//            fromPreset(presets.macosX64, 'LambdaRuntime')
-//        }
-//        else {
-//            println("Building for Linux")
-//            fromPreset(presets.linuxX64, 'LambdaRuntime')
-//        }
-//
-//        configure([LambdaRuntime]) {
-//            compilations.main.cinterops {
-//                libcurl
-//            }
-//        }
-//    }
-//    sourceSets {
-//        // Note: To enable common source sets please comment out 'kotlin.import.noCommonSourceSets' property
-//        // in gradle.properties file and re-import your project in IDE.
-//        LambdaRuntimeMain {
-//        }
-//        LambdaRuntimeTest {
-//        }
-//    }
+dependencies {
+    commonMainImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.2.1"
+    commonMainImplementation "io.ktor:ktor-client-core:$ktor_version"
+
+    commonTestImplementation "org.jetbrains.kotlin:kotlin-test-common:$kotlin_version"
+    commonTestImplementation "org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlin_version"
+    commonTestImplementation "io.ktor:ktor-client-mock:$ktor_version"
+    commonTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.2.1"
+
+    macosMainImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.2.1'
+    macosMainImplementation "io.ktor:ktor-client-core-native:$ktor_version"
+    macosMainImplementation "io.ktor:ktor-client-curl:$ktor_version"
+
+    macosTestApi "io.ktor:ktor-client-mock-native:$ktor_version"
+    macosTestApi 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.2.1'
+
+    linuxMainImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.2.1'
+    linuxMainImplementation "io.ktor:ktor-client-core-native:$ktor_version"
+    linuxMainImplementation "io.ktor:ktor-client-curl:$ktor_version"
+
+    linuxTestApi "io.ktor:ktor-client-mock-native:$ktor_version"
+    linuxTestApi 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.2.1'
 }
 
 
 publishing {
     publications {
-        macos {
-            groupId = 'com.batchofcode'
-            artifactId = 'lambda-runtime-kotlin-native'
-            version = project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
-        }
-        linux {
+        kotlinMultiplatform {
             groupId = 'com.batchofcode'
             artifactId = 'lambda-runtime-kotlin-native'
             version = project.findProperty('buildNum') ?: '0.0.1_SNAPSHOT'
