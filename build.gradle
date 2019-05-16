@@ -15,12 +15,30 @@ repositories {
 }
 
 kotlin {
-    macosX64("macos")
+    macosX64("macos") {
+        binaries {
+            executable('main', [DEBUG]) {
+                // Build a binary on the basis of the test compilation.
+                compilation = compilations.main
+
+                // Base name for the output file.
+                baseName = 'lambda-runtime'
+
+                // Custom entry point function.
+                entryPoint = 'com.batchofcode.lambdaruntime.main'
+
+                // Accessing the output file.
+                println("Executable path: ${outputFile.absolutePath}")
+            }
+
+        }
+    }
     linuxX64("linux")
 }
 
 dependencies {
     commonMainImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.2.1"
+    commonMainImplementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.11.0"
     commonMainImplementation "io.ktor:ktor-client-core:$ktor_version"
 
     commonTestImplementation "org.jetbrains.kotlin:kotlin-test-common:$kotlin_version"
@@ -29,6 +47,7 @@ dependencies {
     commonTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.2.1"
 
     macosMainImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.2.1'
+    macosMainImplementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:0.11.0"
     macosMainImplementation "io.ktor:ktor-client-core-native:$ktor_version"
     macosMainImplementation "io.ktor:ktor-client-curl:$ktor_version"
 
@@ -36,6 +55,7 @@ dependencies {
     macosTestApi 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.2.1'
 
     linuxMainImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.2.1'
+    linuxMainImplementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:0.11.0"
     linuxMainImplementation "io.ktor:ktor-client-core-native:$ktor_version"
     linuxMainImplementation "io.ktor:ktor-client-curl:$ktor_version"
 
@@ -61,7 +81,7 @@ bintray {
     override = true
 //    publications = ['kotlinMultiplatform']
     filesSpec {
-        from 'build/publications/LambdaRuntime/module.json'
+        from 'build/publications/kotlinMultiplatform/module.json'
         into 'com/batchofcode/lambda-runtime-kotlin-native/' + project.version
         rename 'module.json', 'lambda-runtime-kotlin-native-' + project.version + '.module'
     }
@@ -88,11 +108,11 @@ bintrayUpload.doFirst {
 }
 
 task runProgram {
-    def buildType = 'debug' // Change to 'debug' to run application with debug symbols.
-    dependsOn "build"
+    dependsOn "macosBinaries"
     doLast {
-        def programFile = "build/bin/LambdaRuntime/main/${buildType}/executable/lambda-runtime-kotlin-native.kexe"
+        def programFile = "build/bin/macos/mainDebugExecutable/lambda-runtime.kexe"
         exec {
+            environment("AWS_LAMBDA_RUNTIME_API", "localhost:9000")
             executable programFile
             args ''
         }

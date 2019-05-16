@@ -2,29 +2,34 @@ package com.batchofcode.lambdaruntime.client
 
 import com.batchofcode.lambdaruntime.client.exception.BadRequestException
 import com.batchofcode.lambdaruntime.handler.InvocationRequest
-import com.batchofcode.lambdaruntime.http.KtorClient
 import com.batchofcode.lambdaruntime.util.fromMap
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.request
 import io.ktor.client.request.url
 import io.ktor.client.response.HttpResponse
 import io.ktor.content.TextContent
 import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
 import kotlinx.io.core.use
+import kotlin.collections.set
 
-class CommonAwsRuntimeClient(private val client: HttpClient = KtorClient.client) {
+class CommonAwsRuntimeClient(private val client: HttpClient) {
     suspend fun run(handler: (InvocationRequest) -> String) {
         client.use { client ->
-            while (true) {
                 processRequests(client, handler)
-            }
+//            while (true) {
+//            }
         }
     }
 
     suspend fun processRequests(client: HttpClient, handler: (InvocationRequest) -> String) {
+        println("Requesting invocation from http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/next")
         val invocationHttpRequest =
-            client.get<HttpResponse>("http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/next")
+            client.request<HttpResponse>{
+                url("http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/next")
+                method = HttpMethod.Get
+            }
         try {
             if (!invocationHttpRequest.headers.contains("Lambda-Runtime-Aws-Request-Id")) {
                 return
@@ -53,7 +58,7 @@ class CommonAwsRuntimeClient(private val client: HttpClient = KtorClient.client)
             client.post<Unit> {
                 url("http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/${invocationRequest.requestId}/response")
                 headers.fromMap(responseHeaders)
-                body = TextContent(handlerResponse, ContentType.Application.Json)
+                body = TextContent(handlerResponse, ContentType.Text.Any)
             }
         } catch (ex: BadRequestException) {
             val errorPayload = "{" +
