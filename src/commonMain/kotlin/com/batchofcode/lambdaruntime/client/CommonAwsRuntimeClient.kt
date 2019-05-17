@@ -2,6 +2,7 @@ package com.batchofcode.lambdaruntime.client
 
 import com.batchofcode.lambdaruntime.client.exception.BadRequestException
 import com.batchofcode.lambdaruntime.handler.InvocationRequest
+import com.batchofcode.lambdaruntime.util.containsKey
 import com.batchofcode.lambdaruntime.util.fromMap
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
@@ -24,14 +25,13 @@ class CommonAwsRuntimeClient(private val client: HttpClient) {
     }
 
     suspend fun processRequests(client: HttpClient, handler: (InvocationRequest) -> String) {
-        println("Requesting invocation from http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/next")
         val invocationHttpRequest =
             client.request<HttpResponse>{
                 url("http://${EnvironmentConfiguration.lambdaRuntimeApi}/2018-06-01/runtime/invocation/next")
                 method = HttpMethod.Get
             }
         try {
-            if (!invocationHttpRequest.headers.contains("Lambda-Runtime-Aws-Request-Id")) {
+            if (!invocationHttpRequest.headers.containsKey("Lambda-Runtime-Aws-Request-Id")) {
                 return
             }
             val invocationRequest = RequestMapper.mapRequest(invocationHttpRequest)
