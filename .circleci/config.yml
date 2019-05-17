@@ -43,7 +43,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^\d+\.\d+\.\d+$/
+              only: /^\d+\.\d+\.\d+[\-a-z]*$/
       - deploy:
           requires:
             - build
@@ -51,4 +51,4 @@ workflows:
             branches:
               only: master
             tags:
-              only: /^\d+\.\d+\.\d+$/
+              only: /^\d+\.\d+\.\d+[\-a-z]*$/
