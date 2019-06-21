@@ -23,7 +23,7 @@ jobs:
   deploy:
     working_directory: ~/kotlin-native-lambda-runtime
     docker:
-      - image: c1phr/kotlin-native-lambda-runtime-compiler:latest
+      - image: c1phr/kotlin-native-lambda-runtime-compiler:0.15
     steps:
       - attach_workspace:
           at: .
